@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClipKit — Gaming Creator Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f9f9f9;--white:#ffffff;--border:#e2e2e2;
+  --text:#0f0f0f;--text2:#606060;--text3:#aaaaaa;
+  --blue:#065fd4;--blue-light:#e8f0fe;--blue-dark:#0b57d0;
+  --green:#188038;--green-light:#e6f4ea;
+  --red:#d93025;--red-light:#fce8e6;
+  --amber:#e37400;--amber-light:#fff3cd;
+  --purple:#7e22ce;--purple-light:#f3e8fd;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --sh-md:0 4px 8px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --font:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:56px;box-shadow:var(--sh)}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-icon{width:32px;height:32px;background:#ff0000;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.logo-name{font-weight:700;font-size:16px;color:var(--text);line-height:1}
+.logo-tag{font-size:11px;color:var(--text2);margin-top:2px}
+.hdr-badge{margin-left:auto;font-size:11px;font-weight:600;color:var(--text2);background:#f2f2f2;border:1px solid var(--border);border-radius:100px;padding:3px 10px}
+
+/* TABS */
+.tabs{display:flex;padding:0 24px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:56px;z-index:199;overflow-x:auto}
+.tabs::-webkit-scrollbar{height:0}
+.tab{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px 14px;font-family:var(--font);font-weight:500;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--text);background:#f5f5f5}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+
+/* PANELS */
+.panel{display:none;padding:24px 24px 64px;max-width:1100px;margin:0 auto}
+.panel.on{display:block}
+
+/* SECTION HEAD */
+.sec-head{margin-bottom:22px}
+.sec-title{font-weight:700;font-size:22px;color:var(--text);margin-bottom:4px}
+.sec-title span{color:var(--blue)}
+.sec-desc{color:var(--text2);font-size:13px}
+
+/* FORM CARD */
+.fc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:var(--sh)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.fgrp.full{grid-column:1/-1}
+label{font-weight:600;font-size:12px;color:var(--text)}
+label .opt{font-weight:400;color:var(--text2);font-size:11px}
+input,select,textarea{background:var(--white);border:1px solid #c5c5c5;border-radius:6px;padding:9px 12px;font-family:var(--font);font-size:14px;color:var(--text);width:100%;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(6,95,212,.12)}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23606060' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer}
+select option{background:white;color:var(--text)}
+textarea{resize:vertical;line-height:1.5}
+.btn-gen{background:var(--blue);border:none;border-radius:6px;padding:10px 24px;font-family:var(--font);font-weight:600;font-size:14px;color:#fff;cursor:pointer;transition:background .15s,box-shadow .15s;box-shadow:0 1px 3px rgba(6,95,212,.3)}
+.btn-gen:hover{background:var(--blue-dark);box-shadow:0 2px 6px rgba(6,95,212,.35)}
+.btn-gen:active{background:#0a4fbe}
+
+/* OUTPUT */
+.out-label{font-weight:600;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.out-label::before{content:'';display:inline-block;width:3px;height:13px;background:var(--blue);border-radius:2px}
+.out-grid{display:flex;flex-direction:column;gap:10px}
+.out-card{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;animation:fadeUp .25s ease both;box-shadow:var(--sh)}
+.out-card:hover{box-shadow:var(--sh-md);border-color:#c0c0c0}
+.out-card:nth-child(1){animation-delay:.04s}.out-card:nth-child(2){animation-delay:.08s}.out-card:nth-child(3){animation-delay:.12s}.out-card:nth-child(4){animation-delay:.16s}.out-card:nth-child(5){animation-delay:.2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.out-num{font-weight:700;font-size:12px;color:var(--text3);min-width:20px;padding-top:1px;flex-shrink:0}
+.out-txt{flex:1;font-size:14px;line-height:1.55;color:var(--text)}
+.btn-copy{background:var(--white);border:1px solid var(--blue);border-radius:6px;padding:6px 14px;font-family:var(--font);font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn-copy:hover{background:var(--blue-light)}
+.btn-copy.ok{background:var(--green-light);border-color:var(--green);color:var(--green)}
+
+.empty{text-align:center;padding:44px 20px;color:var(--text2)}
+.empty-ico{display:block;font-size:32px;margin-bottom:12px;opacity:.35}
+.empty p{font-size:14px}
+
+/* CALENDAR */
+.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.wk-nav{display:flex;align-items:center;gap:8px}
+.wk-lbl{font-weight:600;font-size:15px;color:var(--text);min-width:180px;text-align:center}
+.btn-nav{background:var(--white);border:1px solid var(--border);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;transition:all .15s;font-size:15px;box-shadow:var(--sh)}
+.btn-nav:hover{background:#f5f5f5;border-color:#b0b0b0;color:var(--text)}
+.btn-save{background:var(--green);border:none;border-radius:6px;padding:9px 20px;font-family:var(--font);font-weight:600;font-size:13px;color:#fff;cursor:pointer;transition:background .15s;box-shadow:0 1px 3px rgba(24,128,56,.3)}
+.btn-save:hover{background:#146c2e}
+
+.stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:85px;text-align:center;box-shadow:var(--sh)}
+.stat-v{font-weight:700;font-size:22px;margin-bottom:2px}
+.stat-l{font-size:11px;color:var(--text2);font-weight:500}
+.stat.pl .stat-v{color:var(--amber)}.stat.fi .stat-v{color:var(--purple)}.stat.po .stat-v{color:var(--green)}.stat.st .stat-v{color:var(--blue)}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px}
+.cal-day{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--sh)}
+.cal-day.today{border-color:var(--blue);box-shadow:0 0 0 2px rgba(6,95,212,.1)}
+.d-head{display:flex;flex-direction:column;gap:1px}
+.d-name{font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
+.d-date{font-weight:700;font-size:16px;color:var(--text)}
+.cal-day.today .d-date{color:var(--blue)}
+.plat-sel{font-size:12px;padding:6px 10px;padding-right:28px;background-position:right 9px center}
+.idea-ta{font-size:12px;padding:7px 9px;min-height:62px}
+.s-btns{display:flex;gap:4px}
+.s-btn{flex:1;background:#f5f5f5;border:1px solid var(--border);border-radius:5px;padding:6px 3px;font-family:var(--font);font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;text-align:center}
+.s-btn:hover{background:#ebebeb;color:var(--text)}
+.s-btn.ap{background:var(--amber-light);border-color:#f6c026;color:#7a4f00}
+.s-btn.af{background:var(--purple-light);border-color:#a855f7;color:var(--purple)}
+.s-btn.ao{background:var(--green-light);border-color:#34a853;color:var(--green)}
+
+/* POSTING TIMES */
+.pt-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--sh)}
+.pt-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.pt-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pt-plat h4{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.t-slot{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:6px;background:#f9f9f9;border:1px solid var(--border);margin-bottom:6px}
+.t-slot.best{background:var(--blue-light);border-color:rgba(6,95,212,.2)}
+.t-day{font-size:13px;color:var(--text2)}
+.t-time{font-weight:600;font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px}
+.t-slot.best .t-time{color:var(--blue)}
+.t-badge{font-size:10px;font-weight:700;color:var(--blue);background:rgba(6,95,212,.1);border-radius:4px;padding:1px 6px}
+
+/* TOAST — Material snackbar style */
+.toast{position:fixed;bottom:20px;right:20px;background:#323232;color:#fff;border-radius:6px;padding:12px 18px;font-weight:500;font-size:13px;display:flex;align-items:center;gap:8px;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.22)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:var(--red)}
+
+/* RESPONSIVE */
+@media(max-width:900px){.cal-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){
+  .panel{padding:16px 14px 56px}
+  .tab{padding:10px 12px 12px;font-size:12px}
+  .cal-grid{grid-template-columns:repeat(2,1fr)}
+  .pt-grid{grid-template-columns:1fr}
+  .stats{gap:7px}
+  .hdr-badge{display:none}
+  .fg{grid-template-columns:1fr}
+}
+@media(max-width:400px){.cal-grid{grid-template-columns:1fr}.wk-lbl{min-width:130px;font-size:13px}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">CK</div>
+    <div>
+      <div class="logo-name">ClipKit</div>
+      <div class="logo-tag">Gaming Creator Toolkit</div>
+    </div>
+  </div>
+  <div class="hdr-badge">PREMIUM v1.0</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab on" onclick="switchTab('hooks',this)">&#127908; Hook Generator</button>
+  <button class="tab" onclick="switchTab('titles',this)">&#127916; Title Optimizer</button>
+  <button class="tab" onclick="switchTab('cal',this)">&#128197; Content Calendar</button>
+</nav>
+
+<!-- HOOK GENERATOR -->
+<section id="p-hooks" class="panel on">
+  <div class="sec-head">
+    <h1 class="sec-title">TikTok <span>Hook Generator</span></h1>
+    <p class="sec-desc">Generate scroll-stopping opening hooks for your gaming clips. Fill in the details and get 5 custom hooks.</p>
+  </div>
+  <div class="fc">
+    <div class="fg">
+      <div class="fgrp">
+        <label for="hk-game">Game Name *</label>
+        <input type="text" id="hk-game" placeholder="e.g. Elden Ring">
+      </div>
+      <div class="fgrp">
+        <label for="hk-type">Clip Type *</label>
+        <select id="hk-type">
+          <option value="">Select type...</option>
+          <option>Fail</option><option>Win</option><option>Discovery</option>
+          <option>Reaction</option><option>Funny</option><option>Clutch</option>
+        </select>
+      </div>
+      <div class="fgrp">
+        <label for="hk-emo">Emotional Angle *</label>
+        <select id="hk-emo">
+          <option value="">Select angle...</option>
+          <option>Shock</option><option>Hype</option><option>Relatable</option>
+          <option>Mystery</option><option>Pain</option>
+        </select>
+      </div>
+      <div class="fgrp">
+        <label for="hk-hrs">Hours Played <span class="opt">(optional)</span></label>
+        <input type="text" id="hk-hrs" placeholder="e.g. 200">
+      </div>
+    </div>
+    <button class="btn-gen" onclick="genHooks()">Generate Hooks &#8594;</button>
+  </div>
+  <div id="hk-out">
+    <div class="out-label">Generated Hooks</div>
+    <div class="empty"><span class="empty-ico">🎣</span><p>Select clip type &amp; emotional angle, then hit Generate.</p></div>
+  </div>
+</section>
+
+<!-- TITLE OPTIMIZER -->
+<section id="p-titles" class="panel">
+  <div class="sec-head">
+    <h1 class="sec-title">YouTube <span>Title Optimizer</span></h1>
+    <p class="sec-desc">Generate curiosity-gap YouTube titles that drive clicks. More detail = better output.</p>
+  </div>
+  <div class="fc">
+    <div class="fg">
+      <div class="fgrp">
+        <label for="ti-game">Game Name *</label>
+        <input type="text" id="ti-game" placeholder="e.g. Minecraft">
+      </div>
+      <div class="fgrp">
+        <label for="ti-type">Video Type *</label>
+        <select id="ti-type">
+          <option value="">Select type...</option>
+          <option>Highlight</option><option>Guide</option><option>Reaction</option>
+          <option>Challenge</option><option>Story</option><option>Ranking</option>
+        </select>
+      </div>
+      <div class="fgrp full">
+        <label for="ti-topic">What the video is about *</label>
+        <input type="text" id="ti-topic" placeholder="e.g. my craziest speedrun attempt, every biome ranked">
+      </div>
+      <div class="fgrp">
+        <label for="ti-num">Number <span class="opt">(optional)</span></label>
+        <input type="text" id="ti-num" placeholder="e.g. 5, 100, 1000">
+      </div>
+      <div class="fgrp">
+        <label for="ti-adj">Strong Adjective <span class="opt">(optional)</span></label>
+        <input type="text" id="ti-adj" placeholder="e.g. Insane, Broken, Secret">
+      </div>
+    </div>
+    <button class="btn-gen" onclick="genTitles()">Generate Titles &#8594;</button>
+  </div>
+  <div id="ti-out">
+    <div class="out-label">Generated Titles</div>
+    <div class="empty"><span class="empty-ico">📺</span><p>Fill in the fields above and hit Generate to get 5 YouTube titles.</p></div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="p-cal" class="panel">
+  <div class="sec-head">
+    <h1 class="sec-title">Content <span>Calendar</span></h1>
+    <p class="sec-desc">Plan, track, and post your gaming content. Your data is saved automatically per session.</p>
+  </div>
+  <div class="cal-top">
+    <div class="wk-nav">
+      <button class="btn-nav" onclick="changeWeek(-1)">&#8592;</button>
+      <span class="wk-lbl" id="wk-lbl">Loading...</span>
+      <button class="btn-nav" onclick="changeWeek(1)">&#8594;</button>
+    </div>
+    <button class="btn-save" onclick="saveCalendar()">&#10003; Save Week</button>
+  </div>
+  <div class="stats">
+    <div class="stat pl"><div class="stat-v" id="s-pl">0</div><div class="stat-l">Planned</div></div>
+    <div class="stat fi"><div class="stat-v" id="s-fi">0</div><div class="stat-l">Filmed</div></div>
+    <div class="stat po"><div class="stat-v" id="s-po">0</div><div class="stat-l">Posted</div></div>
+    <div class="stat st"><div class="stat-v" id="s-st">0</div><div class="stat-l">Day Streak</div></div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+  <div class="pt-card">
+    <div class="pt-title">&#9201; Best Posting Times for Gaming Creators</div>
+    <div class="pt-grid">
+      <div class="pt-plat">
+        <h4>&#9650; TikTok</h4>
+        <div class="t-slot best"><span class="t-day">Mon – Fri</span><span class="t-time">7 PM – 9 PM<span class="t-badge">BEST</span></span></div>
+        <div class="t-slot"><span class="t-day">Mon – Fri</span><span class="t-time">12 PM – 1 PM</span></div>
+        <div class="t-slot best"><span class="t-day">Sat – Sun</span><span class="t-time">10 AM – 12 PM<span class="t-badge">BEST</span></span></div>
+        <div class="t-slot"><span class="t-day">Sat – Sun</span><span class="t-time">8 PM – 10 PM</span></div>
+      </div>
+      <div class="pt-plat">
+        <h4>&#9654; YouTube</h4>
+        <div class="t-slot best"><span class="t-day">Mon – Wed</span><span class="t-time">2 PM – 4 PM<span class="t-badge">BEST</span></span></div>
+        <div class="t-slot"><span class="t-day">Thu – Fri</span><span class="t-time">12 PM – 3 PM</span></div>
+        <div class="t-slot best"><span class="t-day">Sat – Sun</span><span class="t-time">9 AM – 11 AM<span class="t-badge">BEST</span></span></div>
+        <div class="t-slot"><span class="t-day">Sat – Sun</span><span class="t-time">5 PM – 7 PM</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"><span id="t-ico">&#10003;</span><span id="t-msg">Copied!</span></div>
+
+<script>
+// ── HOOK LIBRARY ────────────────────────────────────────────────────
+const HOOKS = {
+Fail_Shock:[
+  "I did {HOURS} hours in {GAME} and THIS just happened to me...",
+  "Nobody warned me {GAME} could do this to a person",
+  "I've never rage quit harder in my life — {GAME} is genuinely broken",
+  "This single moment in {GAME} after {HOURS} hours made me question gaming",
+  "The most embarrassing clip of my entire {GAME} career just happened on camera"
+],
+Fail_Hype:[
+  "Watch me fail so hard in {GAME} it becomes legendary content",
+  "{HOURS} hours in {GAME} and I'm STILL getting clapped — and I love it",
+  "This {GAME} fail actually goes crazy though and here's why",
+  "POV: you're me losing in {GAME} and deciding it's the funniest thing ever",
+  "We don't talk about wins here — we talk about THIS {GAME} fail"
+],
+Fail_Relatable:[
+  "Every {GAME} player has made this exact mistake at least once. Don't lie.",
+  "Tag someone who would make this same mistake in {GAME}",
+  "If you've played {GAME} for {HOURS} hours, you KNOW this exact feeling",
+  "This is what {HOURS} hours of {GAME} actually looks like. Not the highlight reel.",
+  "Nobody talk about this — but we've ALL done this exact thing in {GAME}"
+],
+Fail_Mystery:[
+  "I still don't know how this actually happened in {GAME}...",
+  "What you're about to see in {GAME} has genuinely no explanation",
+  "After {HOURS} hours in {GAME}, I witnessed something that broke my brain",
+  "The developers of {GAME} do not want you to see this clip",
+  "Something went completely wrong in {GAME} and nobody knows why"
+],
+Fail_Pain:[
+  "{HOURS} hours in {GAME} for THIS. I'm done. I quit. It's over.",
+  "This is the hardest {GAME} clip to watch. You have been officially warned.",
+  "I put my whole heart into this {GAME} run and then it happened",
+  "After {HOURS} hours, {GAME} did me the dirtiest it's ever done anyone",
+  "The pain you feel watching this {GAME} fail is not an exaggeration"
+],
+Win_Shock:[
+  "I genuinely cannot believe that actually worked in {GAME}...",
+  "Nobody thought I could pull this off in {GAME} — including me",
+  "This {GAME} win shocked even ME and I was literally there when it happened",
+  "After {HOURS} hours, {GAME} finally gave me the moment I deserved",
+  "Wait... did I just— {GAME} players, you already know what this means"
+],
+Win_Hype:[
+  "THE MOST INSANE WIN OF MY ENTIRE {GAME} CAREER. No debate.",
+  "{HOURS} hours of playing {GAME} all led up to this exact moment",
+  "They said it couldn't be done in {GAME}. I don't take no for an answer.",
+  "This is the cleanest {GAME} play you will see all week. Guaranteed.",
+  "POV: you just pulled off the greatest clutch in {GAME} history"
+],
+Win_Relatable:[
+  "That feeling when {GAME} FINALLY decides to work in your favor",
+  "{HOURS} hours deep in {GAME} and the dopamine hit never once gets old",
+  "Every {GAME} player knows this exact moment of pure unfiltered joy",
+  "This is why we still boot up {GAME} even after all this time",
+  "When {GAME} finally rewards your {HOURS} hours of grinding — this is it"
+],
+Win_Mystery:[
+  "I don't know how this win happened in {GAME} but I'm not questioning it",
+  "There's something genuinely strange about how I won this {GAME} match",
+  "The most scientifically unexplainable W in {GAME} recorded history",
+  "After {HOURS} hours, {GAME} handed me a win I still don't understand",
+  "Something happened at the end of this {GAME} clip that defies all logic"
+],
+Win_Pain:[
+  "I earned this {GAME} win with blood, sweat, and {HOURS} hours of my life",
+  "The grind was real. The win was realer. {HOURS} hours in {GAME}.",
+  "I lost more times than I can count before I got THIS moment in {GAME}",
+  "After everything {GAME} put me through over {HOURS} hours — FINALLY.",
+  "This {GAME} win cost me {HOURS} hours of my life. Every second was worth it."
+],
+Discovery_Shock:[
+  "I just found something inside {GAME} that genuinely should not exist",
+  "{HOURS} hours in and {GAME} is STILL hiding things I've never seen before",
+  "Nobody is talking about this {GAME} discovery and I cannot understand why",
+  "This hidden mechanic in {GAME} will permanently change how you play forever",
+  "Wait — has anyone else actually found THIS specific thing in {GAME}?"
+],
+Discovery_Hype:[
+  "This {GAME} discovery just completely broke the entire established meta",
+  "I found a {GAME} technique after {HOURS} hours that makes you essentially unstoppable",
+  "Drop everything — this {GAME} discovery is absolutely insane and you need to see it",
+  "The entire {GAME} community needs to see this clip right now. No cap.",
+  "I unlocked something in {GAME} that makes the whole game ten times more fun"
+],
+Discovery_Relatable:[
+  "How have we ALL been playing {GAME} completely wrong this entire time?",
+  "I've been in {GAME} for {HOURS} hours and just noticed this for the first time",
+  "That moment when {GAME} reveals something you never knew existed after all this time",
+  "Tag someone who still doesn't know this secret about {GAME}",
+  "Everyone who plays {GAME} needs to see this discovery — you are genuinely welcome"
+],
+Discovery_Mystery:[
+  "I found something hidden deep in {GAME} that the developers never once mentioned",
+  "After {HOURS} hours, {GAME} is still absolutely full of unexplored secrets...",
+  "There's something buried in {GAME} that almost nobody has ever talked about",
+  "This {GAME} secret has been there since day one. How did we all miss it?",
+  "The lore behind this {GAME} discovery goes so much deeper than anyone ever thought"
+],
+Discovery_Pain:[
+  "I spent {HOURS} hours inside {GAME} to find this — so you don't have to",
+  "The hard way I discovered this game-changing {GAME} secret after {HOURS} hours",
+  "I nearly gave up on {GAME} entirely before I found this hidden mechanic",
+  "Finding this in {GAME} cost me {HOURS} hours. Here is exactly what I learned.",
+  "I suffered through {HOURS} hours so you could see this {GAME} discovery for free"
+],
+Reaction_Shock:[
+  "I was absolutely NOT ready for what {GAME} just showed me",
+  "My completely genuine reaction to the most shocking moment in {GAME}",
+  "After {HOURS} hours in {GAME}, THIS is what finally got to me",
+  "{GAME} made me do a literal double take and I had the camera running",
+  "The exact moment {GAME} completely destroyed my composure on camera"
+],
+Reaction_Hype:[
+  "My unfiltered live reaction to the most hype moment in {GAME} right now",
+  "I genuinely could not contain myself during this {GAME} moment. Not even close.",
+  "After {HOURS} hours of {GAME}, nothing compares to having THIS reaction",
+  "Watch my face when {GAME} hits completely different at {HOURS} hours deep",
+  "First time experiencing this in {GAME} and I went absolutely full gamer mode"
+],
+Reaction_Relatable:[
+  "Every single {GAME} player reacts to this exact moment the exact same way",
+  "You already know how this {GAME} moment ends. Now watch my face.",
+  "My {HOURS}-hour {GAME} face when this happens will never stop being funny",
+  "If this {GAME} moment doesn't make you react, please check your pulse",
+  "This is the exact face everyone makes after {HOURS} hours in {GAME}"
+],
+Reaction_Mystery:[
+  "I honestly still don't know what I was reacting to in this {GAME} clip",
+  "Something inside {GAME} triggered a reaction in me I genuinely cannot explain",
+  "My reaction to discovering {GAME}'s strangest secret after {HOURS} hours",
+  "The thing that made me react like this in {GAME} is still completely unknown",
+  "Watch carefully — there's something in this {GAME} clip I completely missed live"
+],
+Reaction_Pain:[
+  "This {GAME} moment physically hurt to react to and I have proof",
+  "I tried to hold it together during this {GAME} clip. I completely failed.",
+  "After {HOURS} hours of grinding {GAME}, THIS is the moment that finally broke me",
+  "My reaction says everything about what {GAME} does to a person after {HOURS} hours",
+  "Watching this {GAME} clip back still hurts just as much the second time"
+],
+Funny_Shock:[
+  "I did NOT expect {GAME} to be this funny after {HOURS} hours",
+  "The funniest thing that has ever happened in {GAME} just happened to me",
+  "This {GAME} moment made me spit out my drink and I am genuinely not sorry",
+  "{GAME} really said this to me after {HOURS} hours and I genuinely cannot—",
+  "Nobody warned me that {GAME} had a secret hidden comedy mode built in"
+],
+Funny_Hype:[
+  "This is objectively the funniest {GAME} clip uploaded anywhere this year",
+  "POV: {GAME} is trying its absolute hardest to make you completely lose it",
+  "I spent {HOURS} hours in {GAME} for THIS moment and it was absolutely worth it",
+  "The most beautifully chaotic {GAME} clip you will see today. You're welcome.",
+  "{GAME} said let's make viral content and delivered beyond all expectations"
+],
+Funny_Relatable:[
+  "If you've played {GAME}, you KNOW this specific brand of total chaos",
+  "{HOURS} hours of {GAME} later and this kind of thing still never stops being funny",
+  "The NPC in {GAME} that somehow speaks directly to your soul",
+  "This {GAME} moment is painfully too real — every single player has been here",
+  "Tag someone who plays {GAME} and will understand this clip immediately"
+],
+Funny_Mystery:[
+  "I do not know who programmed this specific thing into {GAME} but I owe them",
+  "Something glitched inside {GAME} and accidentally became the greatest comedy content",
+  "After {HOURS} hours, {GAME} still finds brand new ways to completely confuse me",
+  "The devs definitely didn't intend this {GAME} moment to exist — or maybe they did",
+  "This {GAME} moment has zero explanation and that's precisely what makes it perfect"
+],
+Funny_Pain:[
+  "It's only funny because it happened to ME in {GAME} and not you",
+  "I cried first, then laughed at this {GAME} moment. Then I cried again.",
+  "{HOURS} hours into {GAME} and the game is STILL personally trolling me",
+  "The universe chose {GAME} as its vehicle to humble me today. Here is the proof.",
+  "This {GAME} clip would hit harder if it wasn't my {HOURS} hours completely wasted"
+],
+Clutch_Shock:[
+  "I still genuinely cannot believe I actually pulled this off in {GAME}",
+  "This {GAME} clutch was so completely unexpected that even I stopped breathing",
+  "After {HOURS} hours in {GAME}, nothing will ever top this moment",
+  "My entire team did not think I could do this in {GAME}. Watch what happens.",
+  "The most unlikely clutch in all of {GAME} history just happened live on my screen"
+],
+Clutch_Hype:[
+  "THE MOST CLUTCH MOMENT IN MY ENTIRE {GAME} CAREER AND IT IS NOT CLOSE",
+  "This is what {HOURS} hours of dedicated {GAME} training looks like in real time",
+  "I was built specifically for this {GAME} clutch. Heart rate: completely off the charts.",
+  "Pinned forever. Best {GAME} moment of my life. {HOURS} hours for this exact second.",
+  "1v4. {GAME}. Watch very closely what happens next."
+],
+Clutch_Relatable:[
+  "That feeling when {GAME} absolutely needs you in the moment and you DELIVER",
+  "Every {GAME} player dreams of pulling off a clutch exactly like this after {HOURS} hours",
+  "The moment your hands start genuinely shaking in {GAME} — and you do it anyway",
+  "This is exactly why you never give up on a {GAME} round early. Lesson learned.",
+  "Tag the {GAME} player who needed to see this specific clutch energy today"
+],
+Clutch_Mystery:[
+  "I don't fully know how I won this {GAME} clutch but I'm rewatching it constantly",
+  "Something took complete control during this {GAME} clutch and I wasn't the one driving",
+  "After {HOURS} hours, {GAME} gave me a clutch I genuinely cannot fully explain",
+  "The most statistically improbable {GAME} clutch you will ever witness in your lifetime",
+  "There's something genuinely strange about how this entire {GAME} clutch played out"
+],
+Clutch_Pain:[
+  "{HOURS} hours of {GAME} pain all built to this one defining moment",
+  "Everything I suffered through in {GAME} was preparation for exactly this",
+  "I failed this clutch 10 times before today in {GAME}. Watch attempt number 11.",
+  "My hands were shaking. My team was going off. I clutched it anyway in {GAME}.",
+  "This {GAME} clutch cost me every piece of mental energy I had — and I'd do it again"
+]
+};
+
+// ── TITLE TEMPLATES ─────────────────────────────────────────────────
+const TITLES = {
+Highlight:[
+  "The {ADJ} {GAME} {TOPIC} That Broke The Internet",
+  "{NUM} Seconds That Prove I'm Built Different in {GAME} | {TOPIC}",
+  "This {GAME} Highlight Will Make Your Jaw Drop ({TOPIC})",
+  "Nobody Plays {GAME} Like This | {ADJ} {TOPIC} Highlight",
+  "The {GAME} {TOPIC} I Spent {NUM} Hours Building To"
+],
+Guide:[
+  "How To Be {ADJ} at {GAME}: {TOPIC} (Nobody Tells You This)",
+  "{NUM} {GAME} Tricks For {TOPIC} That Change Everything",
+  "The Only {GAME} Guide You'll Ever Need | {TOPIC}",
+  "I Spent {NUM} Hours Learning {GAME} So You Don't Have To | {TOPIC}",
+  "Why {ADJ} {GAME} Players Do {TOPIC} (And You Should Too)"
+],
+Reaction:[
+  "I Reacted To The Most {ADJ} {GAME} {TOPIC} Online",
+  "Reacting To {NUM} {GAME} {TOPIC} Clips That Broke My Brain",
+  "The {GAME} {TOPIC} That Made Me Question Everything | Reaction",
+  "My {ADJ} Reaction To The Wildest {GAME} {TOPIC} Content",
+  "{NUM} {GAME} {TOPIC} Moments I Couldn't React To Normally"
+],
+Challenge:[
+  "I Tried The Most {ADJ} {GAME} Challenge: {TOPIC}",
+  "Can I Beat {GAME} With {NUM} Restrictions? ({TOPIC})",
+  "Nobody Thought I'd Finish This {ADJ} {GAME} {TOPIC} Challenge",
+  "The {GAME} {TOPIC} Challenge That {NUM} Creators Already Gave Up On",
+  "I Made {GAME} {ADJ} For {TOPIC} With Only {NUM} Rules | Insane"
+],
+Story:[
+  "How {GAME} Changed My Life After {NUM} Hours | {TOPIC}",
+  "The {ADJ} Truth About What {GAME} Does To You | {TOPIC}",
+  "I Played {GAME} For {NUM} Straight Hours — Here's What Happened ({TOPIC})",
+  "Why I Almost Quit {GAME} And Why I'm Glad I Didn't | {TOPIC}",
+  "The {ADJ} Story Behind My Best {GAME} {TOPIC} Moment"
+],
+Ranking:[
+  "Ranking Every {GAME} {TOPIC} From Worst To Best (Brutally Honest)",
+  "The {ADJ} {GAME} {TOPIC} Tier List Nobody Asked For But Everyone Needs",
+  "I Ranked {NUM} {GAME} {TOPIC}s And The Community Is Furious",
+  "Finally: The {ADJ} {GAME} {TOPIC} Ranking That Settles Everything",
+  "{NUM} {GAME} {TOPIC}s Ranked By Someone Who Actually Plays (Not Clickbait)"
+]
+};
+
+// ── HOOK GENERATOR ──────────────────────────────────────────────────
+function genHooks(){
+  const game=v('hk-game'),type=v('hk-type'),emo=v('hk-emo'),hrs=v('hk-hrs')||'100+';
+  if(!game){toast('Enter a game name!',1);return}
+  if(!type){toast('Select a clip type!',1);return}
+  if(!emo){toast('Select an emotional angle!',1);return}
+  const key=type+'_'+emo;
+  const tpls=HOOKS[key]||[];
+  const out=tpls.map(t=>t.replace(/\{GAME\}/g,game).replace(/\{HOURS\}/g,hrs));
+  renderCards('hk-out',out,'Hooks');
+}
+
+// ── TITLE OPTIMIZER ─────────────────────────────────────────────────
+function genTitles(){
+  const game=v('ti-game'),type=v('ti-type'),topic=v('ti-topic');
+  const num=v('ti-num')||'#';const adj=v('ti-adj')||'Insane';
+  if(!game){toast('Enter a game name!',1);return}
+  if(!type){toast('Select a video type!',1);return}
+  if(!topic){toast('Describe what the video is about!',1);return}
+  const tpls=TITLES[type]||[];
+  const out=tpls.map(t=>t.replace(/\{GAME\}/g,game).replace(/\{TOPIC\}/g,topic).replace(/\{NUM\}/g,num).replace(/\{ADJ\}/g,adj));
+  renderCards('ti-out',out,'Titles');
+}
+
+// ── RENDER CARDS ─────────────────────────────────────────────────────
+function renderCards(id,items,label){
+  const cards=items.map((txt,i)=>{
+    const safe=esc(txt);
+    const attr=txt.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return`<div class="out-card"><div class="out-num">0${i+1}</div><div class="out-txt">${safe}</div><button class="btn-copy" onclick="cp(this,'${attr}')">Copy</button></div>`;
+  }).join('');
+  document.getElementById(id).innerHTML=`<div class="out-label">Generated ${label}</div><div class="out-grid">${cards}</div>`;
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── CLIPBOARD ────────────────────────────────────────────────────────
+function cp(btn,raw){
+  const txt=raw.replace(/\\'/g,"'");
+  const done=()=>{btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},2000);toast('Copied to clipboard!')};
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done))}
+  else{fallbackCopy(txt,done)}
+}
+function fallbackCopy(txt,cb){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');cb()}catch(e){}document.body.removeChild(ta);
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────
+let _tt;
+function toast(msg,err){
+  const el=document.getElementById('toast');
+  el.className='toast '+(err?'err':'ok');
+  document.getElementById('t-ico').textContent=err?'✕':'✓';
+  document.getElementById('t-msg').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── TAB SWITCH ───────────────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('p-'+id).classList.add('on');
+}
+
+// ── CALENDAR ─────────────────────────────────────────────────────────
+const DNAMES=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DFULL=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let curMon=getThisMon();
+let calData=JSON.parse(localStorage.getItem('clipkit_v1')||'{}');
+
+function getThisMon(){
+  const d=new Date();d.setHours(0,0,0,0);
+  const day=d.getDay();const diff=day===0?-6:1-day;
+  d.setDate(d.getDate()+diff);return d;
+}
+function dk(date){return date.toISOString().split('T')[0]}
+function fmt(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+function weekDates(mon){return DNAMES.map((_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d})}
+function isToday(d){const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate()}
+
+function renderCal(){
+  const wk=dk(curMon);
+  const dates=weekDates(curMon);
+  document.getElementById('wk-lbl').textContent=fmt(dates[0])+' – '+fmt(dates[6]);
+  const wkData=calData[wk]||{};
+  const g=document.getElementById('cal-grid');
+  g.innerHTML='';
+  dates.forEach((date,i)=>{
+    const key=dk(date);
+    const dd=wkData[key]||{platform:'TikTok',idea:'',status:''};
+    const div=document.createElement('div');
+    div.className='cal-day'+(isToday(date)?' today':'');
+    div.innerHTML=`
+      <div class="d-head"><div class="d-name">${DNAMES[i]}</div><div class="d-date">${date.getDate()}</div></div>
+      <select class="plat-sel" id="pl-${i}">
+        <option${dd.platform==='TikTok'?' selected':''}>TikTok</option>
+        <option${dd.platform==='YouTube'?' selected':''}>YouTube</option>
+        <option${dd.platform==='Both'?' selected':''}>Both</option>
+      </select>
+      <textarea class="idea-ta" id="id-${i}" placeholder="Content idea...">${dd.idea||''}</textarea>
+      <div class="s-btns">
+        <button class="s-btn${dd.status==='Planned'?' ap':''}" data-d="${i}" data-s="Planned" onclick="setS(this,${i})">Plan</button>
+        <button class="s-btn${dd.status==='Filmed'?' af':''}" data-d="${i}" data-s="Filmed" onclick="setS(this,${i})">Film</button>
+        <button class="s-btn${dd.status==='Posted'?' ao':''}" data-d="${i}" data-s="Posted" onclick="setS(this,${i})">Post</button>
+      </div>`;
+    g.appendChild(div);
+  });
+  updateStats();
+}
+
+function setS(btn,i){
+  const cls={Planned:'ap',Filmed:'af',Posted:'ao'};
+  const s=btn.dataset.s;const was=btn.classList.contains(cls[s]);
+  document.querySelectorAll(`.s-btn[data-d="${i}"]`).forEach(b=>b.classList.remove('ap','af','ao'));
+  if(!was)btn.classList.add(cls[s]);
+  updateStats();
+}
+
+function curWeekSnapshot(){
+  const wk=dk(curMon);const dates=weekDates(curMon);const d={};
+  dates.forEach((date,i)=>{
+    const key=dk(date);
+    const pl=document.getElementById('pl-'+i);
+    const id=document.getElementById('id-'+i);
+    const sb=document.querySelector(`.s-btn[data-d="${i}"].ap,.s-btn[data-d="${i}"].af,.s-btn[data-d="${i}"].ao`);
+    d[key]={platform:pl?pl.value:'TikTok',idea:id?id.value:'',status:sb?sb.dataset.s:''};
+  });
+  calData[wk]=d;
+}
+
+function saveCalendar(){curWeekSnapshot();localStorage.setItem('clipkit_v1',JSON.stringify(calData));toast('Calendar saved!');updateStats()}
+
+function changeWeek(dir){
+  curWeekSnapshot();
+  curMon=new Date(curMon);curMon.setDate(curMon.getDate()+dir*7);
+  renderCal();
+}
+
+function updateStats(){
+  let pl=0,fi=0,po=0;
+  for(let i=0;i<7;i++){
+    const sb=document.querySelector(`.s-btn[data-d="${i}"].ap,.s-btn[data-d="${i}"].af,.s-btn[data-d="${i}"].ao`);
+    if(!sb)continue;
+    if(sb.dataset.s==='Planned')pl++;
+    else if(sb.dataset.s==='Filmed')fi++;
+    else if(sb.dataset.s==='Posted')po++;
+  }
+  set('s-pl',pl);set('s-fi',fi);set('s-po',po);set('s-st',calcStreak());
+}
+
+function calcStreak(){
+  let streak=0;const today=new Date();today.setHours(0,0,0,0);
+  for(let i=0;i<365;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);const key=dk(d);
+    let found=Object.values(calData).some(wk=>wk[key]&&wk[key].status);
+    if(found)streak++;
+    else if(i>0)break;
+  }
+  return streak;
+}
+
+// ── UTILS ────────────────────────────────────────────────────────────
+function v(id){return document.getElementById(id).value.trim()}
+function set(id,val){document.getElementById(id).textContent=val}
+
+// ── INIT ─────────────────────────────────────────────────────────────
+renderCal();
+</script>
+</body>
+</html>
